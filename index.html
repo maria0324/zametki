@@ -15,12 +15,24 @@
             <div v-for="note in column.notes" :key="note.id" class="note"> 
                 <h2>{{ note.title }}</h2> 
                 <p>{{ note.content }}</p>
+                <ul>
+                    <li v-for="(item, index) in note.items" :key="index">
+                        <input type="checkbox" v-model="item.done" @change="checkProgress(note, column)">
+                        {{ item.text }}
+                    </li>
+                </ul>
+                <p v-if="note.completedAt">Completed at: {{ note.completedAt }}</p>
             </div> 
             <input v-model="newNoteTitle" placeholder="New note title">
-            <input v-model="newNoteContent" placeholder="New note content"> 
+            
+            <input v-model="newItemText" placeholder="New item text"> 
             <button @click="addNote(column.id)"  
                     v-if="!column.maxCards || column.notes.length < column.maxCards"> 
                     Add Note 
+            </button> 
+            <button @click="addItem(column.id)"  
+                    v-if="!column.maxCards || column.notes.length < column.maxCards"> 
+                    Add Item 
             </button> 
         </div> 
     </div>
