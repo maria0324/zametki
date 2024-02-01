@@ -1,51 +1,20 @@
-new Vue({ 
-    el: '#app', 
-    data: { 
+const app = new Vue({ 
+  el: '#app', 
+  data: { 
       columns: [ 
-        
-      ] 
-    }, 
-    methods: { 
-      createCard(columnIndex) { 
-           
-        const newCard = { 
-        title: title, 
-        items: items.map(item => ({ text: item, done: false })) 
-      }; 
-   
-      
-      this.columns[columnIndex].push(newCard); 
-    }, 
-    createItem(cardIndex, columnIndex, text) { 
-      
-      const newItem = { text: text, done: false }; 
-   
-      
-      this.columns[columnIndex][cardIndex].items.push(newItem); 
-        
-      }, 
-      moveCard(cardIndex, fromColumnIndex, toColumnIndex) { 
-
-      }, 
-      checkItem(cardIndex, columnIndex, itemIndex) { 
-        
-      }, 
-      saveData() { 
-        
-      }, 
-      loadData() { 
-        
+          { id: 1, notes: [], maxCards: 3 }, 
+          { id: 2, notes: [], maxCards: 5 }, 
+          { id: 3, notes: [] } 
+      ], 
+      newNote: '' 
+  }, 
+  methods:{ 
+      addNote(columnId){ 
+          const column = this.columns.find(col => col.id === columnId); 
+          if(column && (!column.maxCards || column.notes.length < column.maxCards)){ 
+              column.notes.push(this.newNote); 
+              this.newNote = ''; 
+          } 
       } 
-    }, 
-    watch: { 
-        columns: { 
-          handler() { 
-            this.saveData(); 
-          }, 
-          deep: true 
-        } 
-      }, 
-      created() { 
-        this.loadData(); 
-      } 
-    });
+  } 
+});

@@ -10,18 +10,17 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <div id="app">
-        <div class="column" v-for="(column, index) in columns" :key="index">
-            <div class="card" v-for="(card, cardIndex) in column" :key="cardIndex">
-                <h2>{{ card.title }}</h2>
-                <ul>
-                    <li v-for="(item, itemIndex) in card.items" :key="itemIndex">
-                        <input type="checkbox" v-model="item.done">
-                        <span>{{ item.text }}</span>
-                    </li>
-                </ul>
-            </div>
-        </div>
+    <div id="app"> 
+        <div v-for="column in columns" :key="column.id" class="column"> 
+            <div v-for="note in column.notes" :key="note.id" class="note"> 
+                {{ note }} 
+            </div> 
+            <input v-model="newNote" placeholder="New note"> 
+            <button @click="addNote(column.id)"  
+                    v-if="!column.maxCards || column.notes.length < column.maxCards"> 
+                    Add Note 
+            </button> 
+        </div> 
     </div>
     
 </body>
