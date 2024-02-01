@@ -15,6 +15,15 @@ const app = new Vue({
               column.notes.push(this.newNote); 
               this.newNote = ''; 
           } 
-      } 
+      },
+      moveNote(sourceColumnId, targetColumnId, noteIndex) {
+        const sourceColumn = this.columns.find(col => col.id === sourceColumnId);
+        const targetColumn = this.columns.find(col => col.id === targetColumnId);
+        if (sourceColumn && targetColumn) {
+            const noteToMove = sourceColumn.notes[noteIndex];
+            sourceColumn.notes.splice(noteIndex, 1);
+            targetColumn.notes.push(noteToMove);
+        }
+    }
   } 
 });
