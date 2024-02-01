@@ -13,9 +13,11 @@
     <div id="app"> 
         <div v-for="column in columns" :key="column.id" class="column"> 
             <div v-for="note in column.notes" :key="note.id" class="note"> 
-                {{ note }} 
+                <h2>{{ note.title }}</h2> 
+                <p>{{ note.content }}</p>
             </div> 
-            <input v-model="newNote" placeholder="New note"> 
+            <input v-model="newNoteTitle" placeholder="New note title">
+            <input v-model="newNoteContent" placeholder="New note content"> 
             <button @click="addNote(column.id)"  
                     v-if="!column.maxCards || column.notes.length < column.maxCards"> 
                     Add Note 
