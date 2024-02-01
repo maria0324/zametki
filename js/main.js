@@ -1,7 +1,7 @@
 const app = new Vue({ 
   el: '#app', 
   data: { 
-      columns: [ 
+      columns: JSON.parse(localStorage.getItem('columns')) || [ 
           { id: 1, notes: [], maxCards: 3 }, 
           { id: 2, notes: [], maxCards: 5 }, 
           { id: 3, notes: [] } 
@@ -15,6 +15,7 @@ const app = new Vue({
               column.notes.push(this.newNote); 
               this.newNote = ''; 
           } 
+          this.saveState();
       },
       moveNote(sourceColumnId, targetColumnId, noteIndex) {
         const sourceColumn = this.columns.find(col => col.id === sourceColumnId);
@@ -25,6 +26,7 @@ const app = new Vue({
             targetColumn.notes.push(noteToMove);
         }
         this.checkMaxCards();
+        this.saveState();
     },
     checkMaxCards() {
         const secondColumn = this.columns.find(col => col.id === 2);
@@ -35,6 +37,9 @@ const app = new Vue({
             }
         }
     },
+    saveState() {
+        localStorage.setItem('columns', JSON.stringify(this.columns));
+    }
 
   } 
 });
