@@ -24,6 +24,17 @@ const app = new Vue({
             sourceColumn.notes.splice(noteIndex, 1);
             targetColumn.notes.push(noteToMove);
         }
-    }
+        this.checkMaxCards();
+    },
+    checkMaxCards() {
+        const secondColumn = this.columns.find(col => col.id === 2);
+        if (secondColumn && secondColumn.notes.length === secondColumn.maxCards) {
+            const firstColumn = this.columns.find(col => col.id === 1);
+            if (firstColumn) {
+                firstColumn.maxCards = firstColumn.notes.length;
+            }
+        }
+    },
+
   } 
 });
