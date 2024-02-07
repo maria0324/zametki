@@ -1,30 +1,33 @@
 const app = new Vue({ 
     el: '#app', 
     data: { 
-        columns: JSON.parse(localStorage.getItem('columns')) || [ 
+        columns: [ 
             { id: 1, notes: [], maxCards: 3 }, 
             { id: 2, notes: [], maxCards: 5 }, 
             { id: 3, notes: [] } 
         ], 
         newNoteTitle: '', 
         newNoteContent: '',
-        newItemText: '' 
-    }, 
+        newItemText: '',
+        isFirstColumnBlocked: false 
+    },  
     methods:{ 
         addNote(columnId){ 
             const column = this.columns.find(col => col.id === columnId); 
-            if(column && (!column.maxCards || column.notes.length < column.maxCards)){ 
+            if(column && column.id === 1 && (!column.maxCards || column.notes.length < column.maxCards) && !this.isFirstColumnBlocked){ 
                 column.notes.push({ 
                     title: this.newNoteTitle, 
                     content: this.newNoteContent, 
-                    items: [], 
+                    items: [
+                        { text: '', done: false, title: 'Элемент 1' }, 
+                        { text: '', done: false, title: 'Элемент 2' }, 
+                        { text: '', done: false, title: 'Элемент 3' }  
+                    ], 
                     completedAt: null 
                 });
                 this.newNoteTitle = ''; 
                 this.newNoteContent = '';
             } 
-            this.saveState();
-            
         },
         addItem(columnId) {
             const column = this.columns.find(col => col.id === columnId);
@@ -33,26 +36,37 @@ const app = new Vue({
                 note.items.push({ text: this.newItemText, done: false });
                 this.newItemText = '';
             }
-            this.saveState();
             
-            
+
+        },
+        addListItem(note) {
+            note.items.push({
+                text: '',
+                done: false
+            });
         },
         checkProgress(note, column) {
             const doneItems = note.items.filter(item => item.done).length;
             const totalItems = note.items.length;
             const progress = doneItems / totalItems;
-
+        
             if (progress >= 1 && column.id < 3) {
                 this.moveNote(column.id, column.id + 1, note);
                 note.completedAt = new Date().toLocaleString();
-            } else if (progress > 0.5 && column.id === 1) {
+            } else if (progress >= 0.5 && column.id === 1) {
                 this.moveNote(column.id, column.id + 1, note);
             }
-            this.saveState();
-            
-
-            
+        
+            const secondColumn = this.columns.find(col => col.id === 2);
+            if (secondColumn.notes.length >= secondColumn.maxCards && doneItems >= 2) {
+                this.isFirstColumnBlocked = true;
+            } else {
+                this.isFirstColumnBlocked = false;
+            }
         },
+        
+        
+        
         moveNote(sourceColumnId, targetColumnId, note) {
             const sourceColumn = this.columns.find(col => col.id === sourceColumnId);
             const targetColumn = this.columns.find(col => col.id === targetColumnId);
@@ -62,9 +76,7 @@ const app = new Vue({
                 targetColumn.notes.push(note);
             }
         },
-        saveState() {
-            localStorage.setItem('columns', JSON.stringify(this.columns));
-        }
+        
         
     } 
         

@@ -17,22 +17,20 @@
                 <p>{{ note.content }}</p>
                 <ul>
                     <li v-for="(item, index) in note.items" :key="index">
-                        <input type="checkbox" v-model="item.done" @change="checkProgress(note, column)">
-                        {{ item.text }}
+                        <input type="checkbox" v-model="item.done" @change="checkProgress(note, column)" :disabled="column.id === 1 && isFirstColumnBlocked">
+                        <input v-model="item.title" placeholder="Редактировать название элемента" :disabled="column.id === 1 && isFirstColumnBlocked"> 
                     </li>
                 </ul>
                 <p v-if="note.completedAt">Completed at: {{ note.completedAt }}</p>
             </div> 
-            <input v-model="newNoteTitle" placeholder="New note title">
-            
-            <input v-model="newItemText" placeholder="New item text"> 
-            <button @click="addNote(column.id)"  
-                    v-if="!column.maxCards || column.notes.length < column.maxCards"> 
-                    Add Note 
-            </button> 
+            <input v-model="newNoteTitle" placeholder="New note title" v-if="column.id === 1 && !isFirstColumnBlocked">
+            <input v-model="newItemText" placeholder="New item text" v-if="column.id === 1 && !isFirstColumnBlocked"> 
+            <button v-if="column.id === 1 && (!column.maxCards || column.notes.length < column.maxCards) && !isFirstColumnBlocked" @click="addNote(column.id)">
+                Добавить заметку
+            </button>
             <button @click="addItem(column.id)"  
-                    v-if="!column.maxCards || column.notes.length < column.maxCards"> 
-                    Add Item 
+                    v-if="column.id === 1 && (!column.maxCards || column.notes.length < column.maxCards) && !isFirstColumnBlocked"> 
+                Add Item 
             </button> 
         </div> 
     </div>
