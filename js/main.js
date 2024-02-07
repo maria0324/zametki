@@ -9,8 +9,8 @@ const app = new Vue({
         newNoteTitle: '', 
         newNoteContent: '',
         newItemText: '',
-        isFirstColumnBlocked: false 
-    },  
+        isFirstColumnBlocked: false
+    },
     methods:{ 
         addNote(columnId){ 
             const column = this.columns.find(col => col.id === columnId); 
@@ -36,8 +36,8 @@ const app = new Vue({
                 note.items.push({ text: this.newItemText, done: false });
                 this.newItemText = '';
             }
-            
-
+ 
+ 
         },
         addListItem(note) {
             note.items.push({
@@ -49,24 +49,35 @@ const app = new Vue({
             const doneItems = note.items.filter(item => item.done).length;
             const totalItems = note.items.length;
             const progress = doneItems / totalItems;
-        
+ 
             if (progress >= 1 && column.id < 3) {
                 this.moveNote(column.id, column.id + 1, note);
                 note.completedAt = new Date().toLocaleString();
             } else if (progress >= 0.5 && column.id === 1) {
                 this.moveNote(column.id, column.id + 1, note);
             }
-        
+ 
+            if (column.id === 1) {
+                let doneItemsFirstColumn = 0;
+                for (const note of this.columns[0].notes) {
+                    doneItemsFirstColumn += note.items.filter(item => item.done).length;
+                }
+                this.doneItemsFirstColumn = doneItemsFirstColumn;
+            }
+            let progressFirstColumn = this.doneItemsFirstColumn / totalItems
+ 
             const secondColumn = this.columns.find(col => col.id === 2);
-            if (secondColumn.notes.length >= secondColumn.maxCards && doneItems >= 2) {
-                this.isFirstColumnBlocked = true;
-            } else {
+            if (secondColumn.notes.length >= secondColumn.maxCards && progressFirstColumn >= 0.5) {
+                this.isFirstColumnBlocked = true
+                
+            }
+            else {
                 this.isFirstColumnBlocked = false;
+                
             }
         },
-        
-        
-        
+ 
+ 
         moveNote(sourceColumnId, targetColumnId, note) {
             const sourceColumn = this.columns.find(col => col.id === sourceColumnId);
             const targetColumn = this.columns.find(col => col.id === targetColumnId);
@@ -76,8 +87,9 @@ const app = new Vue({
                 targetColumn.notes.push(note);
             }
         },
-        
-        
+ 
+ 
     } 
-        
+ 
 });
+ 
